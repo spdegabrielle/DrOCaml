@@ -1,0 +1,41 @@
+- Error checking needs to pay attention to struct/end.
+- Indentation:
+    <space>let x = blah ;;;
+    <match-space>
+- double semi weirdness
+- Synchronization issues (timeout)
+
+notes:
+
+I propose some brain-storming on IDE issues.
+
+1. Parse with Camlp4 for all functionality: indentation and Emacs Code
+Browser-like features. Augmented with information from .annot files.
+
+2. Use heuristics to repair unfinished code, like here (example should
+be better, I'm sorry):
+
+replace in the background (not in the buffer)
+
+ let rec fib n = if  then 1 else fib(n-1) +
+ ;;
+
+with
+
+ let x01 = ref None;;
+ let x02 = ref None;;
+ let f01() = match !x01 with Some x -> x | None -> failwith "x01";;
+ let f02() = match !x02 with Some x -> x | None -> failwith "x02";;
+ let rec fib n = if (f01()) then 1 else fib(n-1) + (f02());;
+
+Report types for unfinished code as well with C-c C-t.
+
+3. Follow-to-definition and show-where-used for identifiers.
+
+4. Customize `allout-mode' to use ocamldoc syntax.
+
+5. Did I mention context-aware complete? Based on the AST returned by
+Camlp4 together with .annot files. Perhaps unifying types to get a
+clean list of candidates.
+
+
